@@ -1,0 +1,42 @@
+<project name="workflow-test" default="help" basedir=".">
+    <property file="./build.properties" />
+
+    <target name="link-docroot" description="Link site document root to Apache document root">
+        <symlink link="${server.docroot}/www" target="${project.code.dir}" overwrite="true" />
+    </target>
+
+    <target name="help" description="List available targets">
+        <exec executable="phing.phar"
+              passthru="true">
+            <arg value="-l"/>
+        </exec>
+    </target>
+
+    <target name="setenv" description="set environment variables">
+        <append destFile="./test.txt" text="putenv('MY_VAR=my_value');" />
+    </target>
+
+    <target name="bundler-exec">
+        <echo message="Install dependencies"/>
+        <exec dir="${project.basedir}"
+              command="rbenv versions ; rbenv local 1.9.3-p551 ; rbenv version ; bundle install"
+              checkreturn="true"
+              passthru="true"/>
+    </target>
+
+    <target name="install-mailcatcher">
+        <echo message="Install mailcatcher"/>
+        <exec dir="${project.basedir}"
+              command="rbenv versions ; rbenv local 1.9.3-p551 ; rbenv version ; gem install mailcatcher; rbenv rehash"
+              checkreturn="true"
+              passthru="true"/>
+    </target>
+
+    <target name="start-mailcatcher">
+        <echo message="Start mailcatcher"/>
+        <exec dir="${project.basedir}"
+              command="mailcatcher"
+              checkreturn="true"
+              passthru="true"/>
+    </target>
+</project>
